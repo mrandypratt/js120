@@ -1,24 +1,26 @@
-function createHuman() {
-
-}
-
-return {
-  move: null,
-
+const OPTIONS = {
+  rock: {
+    shorthand: 'r',
+    beats: ['scissors', 'lizard']
+  },
+  paper: {
+    shorthand: 'p',
+    beats: ['rock', 'spock']
+  },
+  scissors: {
+    shorthand: 's',
+    beats: ['paper', 'lizard']
+  },
+  lizard: {
+    shorthand: 'l',
+    beats: ['spock', 'paper']
+  },
+  spock: {
+    shorthand: 'k',
+    beats: ['scissors', 'rock']
+  }
 };
 
-function choose() {
-  let choice;
-  const choices = ['rock', 'paper', 'scissors'];
+const DISPLAYED_OPTIONS = Object.entries(OPTIONS).filter(option => option[1].shorthand === 'r')[0][0]
 
-  while (true) {
-    console.log('Please choose rock, paper, or scissors:');
-    choice = readline.question();
-    if (choices.includes(choice)) break;
-    console.log('Sorry, invalid choice.');
-  }
-  this.move = choice
-}
-
-let human = createHuman();
-console.log(human);
+console.log(DISPLAYED_OPTIONS)
