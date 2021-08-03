@@ -1,5 +1,5 @@
 const readline = require('readline-sync');
-const WIN_SCORE = 2;
+const WIN_SCORE = 100;
 const OPTIONS = {
   rock: {
     shorthand: 'r',
@@ -30,10 +30,83 @@ Object.values(OPTIONS).forEach(object => {
 });
 const OPTIONS_TO_DISPLAY = Object.entries(OPTIONS).map(option => `${option[0]} (${option[1].shorthand})`);
 
+function createPlayer() {
+  return {
+    move: null,
+    score: 0,
+  };
+}
+
+function createHuman() {
+  let playerObject = createPlayer();
+
+  let humanObject = {
+    choose() {
+      let choice;
+
+      while (true) {
+        console.log(`Please choose ${OPTIONS_TO_DISPLAY.join(', ')}:`);
+        choice = readline.question().toLowerCase();
+        if (choice === 'history') {
+          RPSGame.displayHistory();
+          continue;
+        }
+        if (LONGHAND_OPTIONS.includes(choice)) {
+          this.move = choice;
+          RPSGame.history.humanMoves.push(choice);
+          break;
+        } else if (SHORTHAND_OPTIONS.includes(choice)) {
+          choice = Object.entries(OPTIONS).filter(option => option[1].shorthand === choice)[0][0];
+          this.move = choice;
+          RPSGame.history.humanMoves.push(choice);
+          break;
+        } else {
+          console.log('Sorry, invalid choice.');
+        }
+      }
+    },
+  };
+
+  return Object.assign(playerObject, humanObject);
+}
+
+function createComputer() {
+  let playerObject = createPlayer();
+
+  let computerObject = {
+    choose() {
+      let choice;
+
+      while (true) {
+        console.log(`Please choose ${OPTIONS_TO_DISPLAY.join(', ')}:`);
+        choice = readline.question().toLowerCase();
+        if (choice === 'history') {
+          RPSGame.displayHistory();
+          continue;
+        }
+        if (LONGHAND_OPTIONS.includes(choice)) {
+          this.move = choice;
+          RPSGame.history.computerMoves.push(choice);
+          break;
+        } else if (SHORTHAND_OPTIONS.includes(choice)) {
+          choice = Object.entries(OPTIONS).filter(option => option[1].shorthand === choice)[0][0];
+          this.move = choice;
+          RPSGame.history.computerMoves.push(choice);
+          break;
+        } else {
+          console.log('Sorry, invalid choice.');
+        }
+      }
+    },
+  };
+
+  return Object.assign(playerObject, computerObject);
+}
+
 const RPSGame = {
   human: createHuman(),
   computer: createComputer(),
-
+  
   history: {
     humanMoves: [],
     computerMoves: [],
@@ -45,23 +118,21 @@ const RPSGame = {
     console.log(`First to ${WIN_SCORE} is the Grand Winner!`);
     console.log(`Type "history" at any point to see past moves.`);
   },
-
-  displayIfHistory(response) {
-    if (response === 'history') {
-      let humanMoves = this.history.humanMoves;
-      let computerMoves = this.history.computerMoves;
-
-      console.log("Rnd | Hum | Com | Win");
-      console.log('---------------------');
-      humanMoves.forEach((_, index) => {
-        console.log(`${index + 1}   | ${humanMoves[index].slice(0, 3)} | ` +
-        `${computerMoves[index].slice(0, 3)} | ${this.history.winners[index].slice(0, 3)}`);
-      });
-
-      readline.question("Press any enter to continue: ");
-    }
+  
+  displayHistory() {
+    let humanMoves = this.history.humanMoves;
+    let computerMoves = this.history.computerMoves;
+    
+    console.log("Rnd | Hum | Com | Win");
+    console.log('---------------------');
+    humanMoves.forEach((_, index) => {
+      console.log(`${index + 1}   | ${humanMoves[index].slice(0, 3)} | ` +
+      `${computerMoves[index].slice(0, 3)} | ${this.history.winners[index].slice(0, 3)}`);
+    });
+    
+    readline.question("Press any enter to continue: ");
   },
-
+  
   displayMoveChoices() {
     console.log(`You chose: ${this.human.move}`);
     console.log(`The computer chose: ${this.computer.move}`);
@@ -70,7 +141,7 @@ const RPSGame = {
   determineRoundWinner() {
     let humanMove = this.human.move;
     let computerMove = this.computer.move;
-
+  
     if (OPTIONS[humanMove].beats.includes(computerMove)) {
       return 'human';
     } else if (OPTIONS[computerMove].beats.includes(humanMove)) {
@@ -79,28 +150,28 @@ const RPSGame = {
       return 'tie';
     }
   },
-
+  
   displayRoundWinner(winner) {
     if (winner === 'human') console.log("You won the round!");
     if (winner === 'computer') console.log("Comoputer won the round!");
     if (winner === 'tie') console.log("It's a tie!");
   },
-
+  
   updateScore(winner) {
     if (winner === 'human') this.human.score += 1;
     if (winner === 'computer') this.computer.score += 1;
-
+    
     this.history.winners.push(winner);
   },
-
+  
   displayScore() {
     console.log(`Human: ${this.human.score}\nComputer: ${this.computer.score}`);
   },
-
+  
   isGrandWinner() {
-    return this.human.score === WIN_SCORE || this.computer.score === WIN_SCORE;
+    return (this.human.score === WIN_SCORE || this.computer.score === WIN_SCORE);
   },
-
+  
   displayGrandWinner() {
     if (this.human.score === WIN_SCORE) console.log("You are the Grand Winner!");
     if (this.computer.score === WIN_SCORE) console.log("Computer is the Grand Winner!");
@@ -110,14 +181,17 @@ const RPSGame = {
     while (true) {
       console.log('Would you like to play again? (y/n)');
       let answer = readline.question();
-      this.displayIfHistory(answer);
+      if (answer === 'history') {
+        this.displayHistory();
+        continue;
+      }
       return answer.toLowerCase()[0] === 'y';
     }
   },
-
+  
   resetScores() {
-    this.human.score = 0;
-    this.computer.score = 0;
+      this.human.score = 0;
+      this.computer.score = 0;
   },
 
   displayGoodbyeMessage() {
@@ -147,69 +221,5 @@ const RPSGame = {
     this.displayGoodbyeMessage();
   },
 };
-
-function createPlayer() {
-  return {
-    move: null,
-    score: 0,
-  };
-}
-
-function createHuman() {
-  let playerObject = createPlayer();
-
-  let humanObject = {
-    addChoice(choice) {
-      this.move = choice;
-      RPSGame.history.humanMoves.push(choice);
-    },
-
-    choose() {
-      while (true) {
-        console.log(`Please choose ${OPTIONS_TO_DISPLAY.join(', ')}:`);
-        let choice = readline.question().toLowerCase();
-        RPSGame.displayIfHistory(choice);
-        if (LONGHAND_OPTIONS.includes(choice)) {
-          this.addChoice(choice);
-          break;
-        } else if (SHORTHAND_OPTIONS.includes(choice)) {
-          choice = Object.entries(OPTIONS).filter(option => {
-            return option[1].shorthand === choice;
-          })[0][0];
-          this.addChoice(choice);
-          break;
-        } else {
-          console.log('Sorry, invalid choice.');
-        }
-      }
-    },
-  };
-
-  return Object.assign(playerObject, humanObject);
-}
-
-function createComputer() {
-  let playerObject = createPlayer();
-
-  let computerObject = {
-    getRandomChoice() {
-      return LONGHAND_OPTIONS[Math.floor(
-        Math.random() * LONGHAND_OPTIONS.length)];
-    },
-
-    choose() {
-      let choice;
-      let computerMoves = RPSGame.history.computerMoves;
-      choice = this.getRandomChoice();
-      if (choice === computerMoves[computerMoves.length - 1]) {
-        choice = this.getRandomChoice();
-      }
-      this.move = choice;
-      RPSGame.history.computerMoves.push(choice);
-    },
-  };
-
-  return Object.assign(playerObject, computerObject);
-}
 
 RPSGame.play();
