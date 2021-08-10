@@ -1,10 +1,3 @@
-function Rectangle(width, height) {
-  this.width = width;
-  this.height = height;
-  this.area = RECTANGLE.area.call(this);
-  this.perimeter = RECTANGLE.perimeter.call(this);
-}
-
 let RECTANGLE = {
   area: function() {
     return this.width * this.height;
@@ -14,6 +7,12 @@ let RECTANGLE = {
   },
 };
 
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.area = RECTANGLE.area();
+  this.perimeter = RECTANGLE.perimeter();
+}
 
 let rect1 = new Rectangle(2, 3);
 

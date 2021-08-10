@@ -1,14 +1,21 @@
-function Circle(r) {
-  this.radius = r;
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.area = RECTANGLE.area.call(this);
+  this.perimeter = RECTANGLE.perimeter.call(this);
 }
 
-Circle.prototype.area = function() {
-    return Math.PI * (this.radius**2);
+let RECTANGLE = {
+  area: function() {
+    return this.width * this.height;
+  },
+  perimeter: function() {
+    return 2 * (this.width + this.height);
+  },
 };
 
-let a = new Circle(3);
-let b = new Circle(4);
 
-console.log(a.area().toFixed(2)); // => 28.27
-console.log(b.area().toFixed(2)); // => 50.27
-console.log(a.hasOwnProperty('area')); // => false
+let rect1 = new Rectangle(2, 3);
+
+console.log(rect1.area);
+console.log(rect1.perimeter);
