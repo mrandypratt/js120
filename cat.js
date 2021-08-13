@@ -1,14 +1,41 @@
-let a = {
-  foo: 1,
-  bar: 2,
+function bar() {
+  console.log('good morning');
+}
+
+global.inner = {
+  bar() {
+    console.log('good afternoon');
+  },
 };
 
-let b = {};
-Object.setPrototypeOf(b, a);
+let obj = {
+  inner: {
+    bar() {
+      console.log('good night');
+    },
 
-b.foo = 3;
-b.bar = "somtakjdkj";
+    foo() {
+      bar();
+    },
+  },
 
-console.log(b.foo);                    // => 1
-console.log(b);                        // => {}
-console.log(Object.getPrototypeOf(b)); // => { foo: 1, bar: 2 }
+  bar() {
+    console.log('wake up');
+  },
+
+  foo() {
+    this.inner.bar();
+    inner.bar();
+    bar();
+  }
+};
+
+let foo = function() {
+  console.log('go to sleep');
+}
+
+function go(foo) {
+  foo();
+}
+
+go(obj.foo);
