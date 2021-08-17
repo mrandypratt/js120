@@ -1,30 +1,3 @@
-/*
-Tic Tac Toe is a game where players take turn placing markers on a game board.
-One player is a computer and the other is human
-the markers are 'x' and 'o'
-Player 'x' goes first
-The following Records are kept:
-  -Score (Wins, Losses, Ties)
-  -Move History
-
-
-Each round consists of the following:
-  -Current Player selects a space on the game board
-    -Check for valid move until move is valid
-  -Move added to Move History
-  -Check for Winner
-    -Winner === true
-      -Display winner
-      -Add winner to score
-      -End Game
-  -Check for Tie
-    -Tie === true
-      -Display Tie
-      -End Game
-  -Switch Current Player
-  -Loop
-*/
-
 const readline = require("readline-sync");
 
 class Player {
@@ -53,9 +26,13 @@ class Square {
   static UNUSED_SQUARE = " ";
   static HUMAN_MARKER = "X";
   static COMPUTER_MARKER = "O";
-  
+
   constructor(initialMarker = Square.UNUSED_SQUARE) {
     this.marker = initialMarker;
+  }
+
+  toString() {
+    return this.marker;
   }
 
   setMarker(marker) {
@@ -64,6 +41,10 @@ class Square {
 
   isUnused() {
     return this.marker === Square.UNUSED_SQUARE;
+  }
+
+  getMarker() {
+    return this.marker;
   }
 }
 
@@ -74,7 +55,7 @@ class Board {
       this.squares[i] = new Square();
     }
   }
-  
+
   display() {
     console.log("");
     console.log("     |     |     ");
@@ -92,7 +73,7 @@ class Board {
   }
 
   markSquareAt(key, marker) {
-    this.squares[key].setMarker(marker)
+    this.squares[key].setMarker(marker);
   }
 
   unusedSquares() {
@@ -130,55 +111,55 @@ class TTTGame {
     this.human = new Human();
     this.computer = new Computer();
   }
-  
+
   play() {
     this.displayWelcomeMessage();
 
     while (true) {
       this.board.display();
-      
+
       this.humanMoves();
       if (this.gameOver()) break;
-      
+
       this.computerMoves();
       if (this.gameOver()) break;
     }
-    
+
     this.displayResults();
     this.displayGoodbyeMessage();
   }
-  
+
   displayWelcomeMessage() {
     console.log("Welcome!");
   }
-  
+
   humanMoves() {
     let choice;
-    
+
     while (true) {
       let validChoices = this.board.unusedSquares();
       choice = readline.question(`Choose a square: ${validChoices.join(", ")}.  `);
-      
+
       let choiceInteger = parseInt(choice, 10);
       if (validChoices.includes(choice)) break;
-      
+
       console.log("Invalid Choice\n");
     }
-    
+
     this.board.markSquareAt(choice, this.human.getMarker());
   }
-  
+
   computerMoves() {
     let validChoices = this.board.unusedSquares();
     let choice;
-    
+
     do {
       choice = Math.floor((9 * Math.random()) + 1).toString();
     } while (!validChoices.includes(choice));
 
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
-  
+
   displayResults() {
     if (this.isWinner(this.human)) {
       console.log("You won! Congratulations!");
@@ -188,11 +169,11 @@ class TTTGame {
       console.log("A tie game. How boring.");
     }
   }
-  
+
   displayGoodbyeMessage() {
     console.log("Goodbye!");
   }
-  
+
   gameOver() {
     return this.board.isFull() || this.someoneWon();
   }
