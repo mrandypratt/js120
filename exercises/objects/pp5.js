@@ -14,7 +14,7 @@ function createStudent (name, year) {
     },
 
     listCourses() {
-      console.log(this.courses)
+      console.log(this.courses);
     },
 
     addNote(code, note) {
@@ -22,7 +22,7 @@ function createStudent (name, year) {
         if (course.code === code) {
           course.note.push(note);
         }
-      })
+      });
     },
 
     updateNote(code, note) {
@@ -30,22 +30,22 @@ function createStudent (name, year) {
         if (course.code === code) {
           course.note = [note];
         }
-      })
+      });
     },
 
     viewNotes() {
       let notes = [];
       this.courses.forEach(course => {
-        if (course.note[0]) notes.push(`${course.name}: ${course.note.join("; ")}`)
+        if (course.note[0]) notes.push(`${course.name}: ${course.note.join("; ")}`);
       });
       notes.forEach(note => console.log(note));
     },
-  }
+  };
 }
 
 let school = {
   addStudent() {
-
+    
   },
 
   enrollStudent() {
@@ -63,18 +63,15 @@ let school = {
   courseReport() {
 
   },
-}
+};
 
-let foo = createStudent('Foo', '1st');
-foo.info(); // "Foo is a 1st year student"
-foo.listCourses(); // [];
-foo.addCourse({ name: 'Math', code: 101 });
-foo.addCourse({ name: 'Advanced Math', code: 102 });
-foo.listCourses(); // [{ name: 'Math', code: 101 }, { name: 'Advanced Math', code: 102 }]
-foo.addNote(101, 'Fun course');
-foo.addNote(101, 'Remember to study for algebra');
-foo.viewNotes(); // "Math: Fun course; Remember to study for algebra"
-foo.addNote(102, 'Difficult subject');
-foo.viewNotes(); // "Math: Fun course; Remember to study for algebra" // "Advance Math: Difficult subject"
-foo.updateNote(101, 'Fun course');
-foo.viewNotes(); // "Math: Fun course" // "Advanced Math: Difficult subject"
+// Examples of created student objects with grades; methods on the objects are not shown here for brevity.
+// The following are only showing the properties that aren't methods for the three objects
+let foo = createStudent("foo", "3rd");
+foo.addCourse("Math");
+foo
+
+school.getReportCard(foo);
+school.courseReport('Math');
+school.courseReport('Advanced Math');
+school.courseReport('Physics');
